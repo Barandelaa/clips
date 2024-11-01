@@ -23,7 +23,7 @@
 (deftemplate sensor-acceso
    (slot nombre)
    (slot zona)
-   (slot nivel-acceso))
+   (slot acceso))
 
 (deftemplate sensor-salida
    (slot nombre)
@@ -39,27 +39,36 @@
    (slot humo))
 
 
-(defrule ajustar-temperatura
+
+(defrule ajustar-temperatura-alta
    ?sensor <- (sensor-temperatura (nombre ?nombre) (zona ?zona) (temperatura ?temp))
-   (or
-      (test (>= ?temp 25))
-      (test (<= ?temp 20))
-   )
+   (test (>= ?temp 25))
    =>
-   (printout t "Temperatura alta en el sensor " ?nombre ", de la zona " ?zona "." crlf)
-   (retract ?sensor))
+   (printout t "Temperatura alta en el sensor " ?nombre ", de la zona " ?zona ". Bajando 1 grado." crlf)
+   (modify ?sensor (temperatura (- ?temp 1))))
 
 
-(defrule ajustar-humedad
+(defrule ajustar-temperatura-baja
+   ?sensor <- (sensor-temperatura (nombre ?nombre) (zona ?zona) (temperatura ?temp))
+   (test (<= ?temp 20))
+   =>
+   (printout t "Temperatura baja en el sensor " ?nombre ", de la zona " ?zona ". Subiendo 1 grado." crlf)
+   (modify ?sensor (temperatura (+ ?temp 1))))
+
+
+(defrule ajustar-humedad-alta
    ?sensor <- (sensor-humedad (nombre ?nombre) (zona ?zona) (humedad ?hum))
-   (or
-      (test (>= ?hum 60))
-      (test (<= ?hum 40))
-   )
+   (test (>= ?hum 60))
    =>
-   (printout t "Humedad alta en el sensor " ?nombre ", de la zona " ?zona "." crlf)
-   (retract ?sensor))
+   (printout t "Humedad alta en el sensor " ?nombre ", de la zona " ?zona ". Bajando la humedad." crlf)
+   (modify ?sensor (humedad (- ?hum 10))))
 
+(defrule ajustar-humedad-baja
+   ?sensor <- (sensor-humedad (nombre ?nombre) (zona ?zona) (humedad ?hum))
+   (test (<= ?hum 40))
+   =>
+   (printout t "Humedad baja en el sensor " ?nombre ", de la zona " ?zona ". Subiendo la humedad." crlf)
+   (modify ?sensor (humedad (+ ?hum 10))))
 
 (defrule protocolo-incendios
    ?sensor <- (sensor-humo (nombre ?nombre) (zona ?zona) (humo ?humo))
@@ -82,14 +91,15 @@
 
 
 (defrule control-acceso
-   ?sensor <- (sensor-acceso (nombre ?nombre) (zona ?zona) (nivel-acceso ?niv))
+   ?sensor <- (sensor-acceso (nombre ?nombre) (zona ?zona) (acceso ?per))
    ?sala <- (zona (nombre ?zona) (acceso ?acc) (ocupacion-max ?ocpmax) (ocupacion-actual ?ocpact))
-   (or
+   ?usuario <- (usuario (nombre ?per) (acceso ?niv))
+   (and
       (test (< ?ocpact ?ocpmax))
       (test (>= ?niv ?acc))
    )
    =>
-   (printout t "Entrada registrada en " ?zona "." crlf)
+   (printout t ?per " ha entrado en " ?zona "." crlf)
    (modify ?sala (ocupacion-actual (+ ?ocpact 1)))
    (retract ?sensor))
 
@@ -106,7 +116,7 @@
 (defrule protocolo-seguridad
    ?sensor <- (sensor-metales (nombre ?nombre) (zona ?zona))
    =>
-   (printout t "Detectado explosivo en " ?zona ". Amenaza a la seguridad. Evacuación inminente del edificio." crlf)
+   (printout t "Detectado explosivo en " ?zona ". Amenaza a la seguridad. Evacuacion inminente del edificio." crlf)
    (do-for-all-facts ((?z zona)) TRUE
       (modify ?z (ocupacion-actual 0)))
    (retract ?sensor))
