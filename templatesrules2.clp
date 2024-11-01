@@ -1,3 +1,7 @@
+(deftemplate sensor-reading
+   (slot sensor-id)
+   (slot value))
+
 (deftemplate usuario
    (slot nombre)
    (slot ocupacion)
@@ -31,69 +35,26 @@
 
 (deftemplate sensor-metales
    (slot nombre)
-   (slot zona))
-
-(deftemplate sensor-humo
-   (slot nombre)
    (slot zona)
-   (slot humo))
+   (slot detectado))
 
-
-(defrule ajustar-temperatura
-   ?sensor <- (sensor-temperatura (nombre ?nombre) (zona ?zona) (temperatura ?temp))
-   (or
-      (test (>= ?temp 25))
-      (test (<= ?temp 20))
-   )
+(defrule high-temperature
+   (sensor-temperatura (nombre ?nombre) (zona ?zona) (temperatura ?temp&:(> ?temp 30)))
    =>
-   (printout t "Temperatura anormal en " ?zona "." crlf)
-   (retract ?sensor))
+   (printout t "Temperatura demasiado alta detectada por " ?nombre " en zona " ?zona " con temperature " ?temp crlf))
 
-
-(defrule ajustar-humedad
-   ?sensor <- (sensor-humedad (nombre ?nombre) (zona ?zona) (humedad ?hum))
-   (or
-      (test (>= ?hum 60))
-      (test (<= ?hum 40))
-   )
+(defrule high-humidity
+   (sensor-humedad (nombre ?nombre) (zona ?zona) (humedad ?hum&:(> ?hum 70)))
    =>
-   (printout t "Humedad anormal en " ?zona "." crlf)
-   (retract ?sensor))
+   (printout t "Alta humedad detectada por sensor " ?nombre " en zona " ?zona " con humedad " ?hum crlf))
 
-
-(defrule protocolo-incendios
-   ?sensor <- (sensor-humo (nombre ?nombre) (zona ?zona) (humo ?humo))
-   ?sala <- (zona (nombre ?zona) (contenido ?contenido))  ; Se obtiene la información sobre el contenido de la zona
-   (test (eq ?humo "Si"))
-   =>
-   (if (eq ?contenido "sensible")
-       then
-          (printout t "Humo detectado en zona sensible " ?zona crlf)
-          (printout t "Evacuando el edificio..." crlf))
-          (forall ?z <- (zona (nombre ?nombre-zona) (ocupacion-actual ?ocpact))
-      	  (modify ?z (ocupacion-actual 0)))
-      	  (printout t "Activando sistema de gas" crlf)
-          
-       else
-          (printout t "Humo detectado en zona " ?zona ". Activando sistema de agua." crlf))
-          (printout t "Evacuando el edificio..." crlf))
-          (forall ?z <- (zona (nombre ?nombre-zona) (ocupacion-actual ?ocpact))
-      	  (modify ?z (ocupacion-actual 0)))
-   	  (retract ?sensor))
-
-
-(defrule control-acceso
-   ?sensor <- (sensor-acceso (nombre ?nombre) (zona ?zona) (nivel-acceso ?niv))
-   ?sala <- (zona (nombre ?zona) (acceso ?acc) (ocupacion-max ?ocpmax) (ocupacion-actual ?ocpact))
-   (or
-      (test (< ?ocpact ?ocpmax))
-      (test (>= ?niv ?acc))
-   )
+(defrule control-entrada
+   ?sensor <- (sensor-acceso (nombre ?nombre) (zona ?zona) (nivel-acceso ?nivel))
+   ?sala <- (zona (nombre ?zona) (ocupacion-actual ?ocpact))
    =>
    (printout t "Entrada registrada en " ?zona "." crlf)
    (modify ?sala (ocupacion-actual (+ ?ocpact 1)))
    (retract ?sensor))
-
 
 (defrule control-salida
    ?sensor <- (sensor-salida (nombre ?nombre) (zona ?zona))
@@ -103,13 +64,10 @@
    (modify ?sala (ocupacion-actual (- ?ocpact 1)))
    (retract ?sensor))
 
-
 (defrule protocolo-seguridad
    ?sensor <- (sensor-metales (nombre ?nombre) (zona ?zona))
    =>
    (printout t "Detectado explosivo en " ?zona ". Amenaza a la seguridad. Evacuación inminente del edificio." crlf)
-   (forall ?z <- (zona (nombre ?nombre-zona) (ocupacion-actual ?ocpact))
+   (do-for-all-facts ((?z zona)) TRUE
       (modify ?z (ocupacion-actual 0)))
    (retract ?sensor))
-
-
