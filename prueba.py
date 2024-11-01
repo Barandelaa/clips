@@ -4,10 +4,10 @@ from clips import Environment
 # Crear el entorno CLIPS
 env = Environment()
 
-# Cargar las reglas y hechos desde el archivo templatesrules2.clp
+# Cargar las reglas
 env.load("templatesrules2.clp")
 
-# Cargar los hechos desde el archivo factos2.clp
+# Cargar los hechos
 env.load_facts("factos2.clp")
 
 # Función para generar lecturas de sensor
