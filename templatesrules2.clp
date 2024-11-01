@@ -94,13 +94,17 @@
    ?sensor <- (sensor-acceso (nombre ?nombre) (zona ?zona) (acceso ?per))
    ?sala <- (zona (nombre ?zona) (acceso ?acc) (ocupacion-max ?ocpmax) (ocupacion-actual ?ocpact))
    ?usuario <- (usuario (nombre ?per) (acceso ?niv))
-   (and
-      (test (< ?ocpact ?ocpmax))
-      (test (>= ?niv ?acc))
-   )
    =>
-   (printout t ?per " ha entrado en " ?zona "." crlf)
-   (modify ?sala (ocupacion-actual (+ ?ocpact 1)))
+   (if (< ?ocpact ?ocpmax)
+      then
+      (if (>= ?niv ?acc)
+         then
+         (printout t ?per " ha entrado en " ?zona "." crlf)
+         (modify ?sala (ocupacion-actual (+ ?ocpact 1)))
+      else
+         (printout t ?per " no tiene permiso para entrar en " ?zona "." crlf))
+   else
+      (printout t "La zona " ?zona " esta llena." crlf))
    (retract ?sensor))
 
 
