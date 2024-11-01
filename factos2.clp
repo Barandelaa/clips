@@ -14,7 +14,3 @@
    (zona (nombre "servidores") (acceso "2")(contenido "sensible"))
    (zona (nombre "comunicaciones") (acceso "2")(contenido "sensible"))
    (zona (nombre "area control") (acceso "3")(contenido "sensible")))
-   
-
-
-
