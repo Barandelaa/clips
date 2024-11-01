@@ -44,7 +44,7 @@
    ?sensor <- (sensor-temperatura (nombre ?nombre) (zona ?zona) (temperatura ?temp))
    (test (>= ?temp 25))
    =>
-   (printout t "Temperatura alta en el sensor " ?nombre ", de la zona " ?zona ". Bajando 1 grado." crlf)
+   (printout t "Temperatura alta ("?temp") en el sensor " ?nombre ", de la zona " ?zona ". Bajando 1 grado." crlf)
    (modify ?sensor (temperatura (- ?temp 1))))
 
 
@@ -52,7 +52,7 @@
    ?sensor <- (sensor-temperatura (nombre ?nombre) (zona ?zona) (temperatura ?temp))
    (test (<= ?temp 20))
    =>
-   (printout t "Temperatura baja en el sensor " ?nombre ", de la zona " ?zona ". Subiendo 1 grado." crlf)
+   (printout t "Temperatura baja ("?temp") en el sensor " ?nombre ", de la zona " ?zona ". Subiendo 1 grado." crlf)
    (modify ?sensor (temperatura (+ ?temp 1))))
 
 
@@ -60,14 +60,14 @@
    ?sensor <- (sensor-humedad (nombre ?nombre) (zona ?zona) (humedad ?hum))
    (test (>= ?hum 60))
    =>
-   (printout t "Humedad alta en el sensor " ?nombre ", de la zona " ?zona ". Bajando la humedad." crlf)
+   (printout t "Humedad alta ("?hum") en el sensor " ?nombre ", de la zona " ?zona ". Bajando la humedad en un 10%." crlf)
    (modify ?sensor (humedad (- ?hum 10))))
 
 (defrule ajustar-humedad-baja
    ?sensor <- (sensor-humedad (nombre ?nombre) (zona ?zona) (humedad ?hum))
    (test (<= ?hum 40))
    =>
-   (printout t "Humedad baja en el sensor " ?nombre ", de la zona " ?zona ". Subiendo la humedad." crlf)
+   (printout t "Humedad baja ("?hum") en el sensor " ?nombre ", de la zona " ?zona ". Subiendo la humedad en un 10%." crlf)
    (modify ?sensor (humedad (+ ?hum 10))))
 
 (defrule protocolo-incendios
