@@ -9,7 +9,6 @@ env = Environment()
 env.load("templatesrules2.clp")
 
 # Cargar los hechos
-# env.load("factos2.clp")
 def cargar_hechos():
     env.load("hechos.clp")
     env.reset()
@@ -20,7 +19,8 @@ def generar_lectura(sensor):
     value = random.uniform(20, 40)  # Generar un valor aleatorio entre 20 y 40
     return {"nombre": sensor["nombre"], "zona": sensor["zona"], "temperatura": value}
 
-def demostracion_temperatura():
+# Función para mostrar la ejecucion de las reglas de regulacion de temperatura
+def demostracion_temperatura(): 
     cargar_hechos()
     print("Demostración de temperatura: ")
     env.assert_string('(sensor-temperatura (nombre "sensor-temp-1") (zona "servidores") (temperatura 27))')
@@ -29,6 +29,7 @@ def demostracion_temperatura():
     print("\n")
     sleep(5)
 
+# Función para mostrar la ejecucion de las reglas de regulacion de humedad
 def demostracion_humedad():
     cargar_hechos()
     print("Demostración de humedad: ")
@@ -38,6 +39,7 @@ def demostracion_humedad():
     print("\n")
     sleep(5)
 
+# Función para mostrar la ejecucion de las reglas de incendio
 def demostracion_incendio():
     cargar_hechos()
     print("Demostración de incendio: ")
@@ -46,6 +48,7 @@ def demostracion_incendio():
     print("\n")
     sleep(5)
 
+# Función para mostrar la ejecucion de las reglas de accesos
 def demostracion_accesos():
     cargar_hechos()
     print("Demostración de accesos: ")
@@ -56,15 +59,13 @@ def demostracion_accesos():
     print("\n")
     sleep(5)
 
+# Función para mostrar ña ejecucion de las reglas de caso de bomba
 def demostracion_bomba():
     cargar_hechos()
     print("Demostración de bomba: ")
     env.assert_string('(sensor-metales (nombre "sensor-metales-1") (zona "entrada"))')
     env.run()
     print("\n")
-
-
-
 
 
 #Lanzar demostraciones
@@ -74,5 +75,3 @@ demostracion_incendio()
 demostracion_accesos()
 demostracion_bomba()
 
-#for fact in env.facts():
-#    print(fact)

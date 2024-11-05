@@ -8,7 +8,7 @@
    (slot acceso)
    (slot ocupacion-max)
    (slot ocupacion-actual)
-   (slot contenido))  ; Atributo para describir el tipo de contenido de la zona (por ejemplo: "sensible" o "normal")
+   (slot contenido))  
 
 (deftemplate sensor-temperatura
    (slot nombre)
