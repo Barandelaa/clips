@@ -1,4 +1,3 @@
-import random
 from clips import Environment
 from time import sleep
 
@@ -13,11 +12,6 @@ def cargar_hechos():
     env.load("hechos.clp")
     env.reset()
 
-
-# Función para generar lecturas de temperatura
-def generar_lectura(sensor):
-    value = random.uniform(20, 40)  # Generar un valor aleatorio entre 20 y 40
-    return {"nombre": sensor["nombre"], "zona": sensor["zona"], "temperatura": value}
 
 # Función para mostrar la ejecucion de las reglas de regulacion de temperatura
 def demostracion_temperatura(): 
@@ -53,13 +47,14 @@ def demostracion_accesos():
     cargar_hechos()
     print("Demostración de accesos: ")
     env.assert_string('(sensor-acceso (nombre "sensor-acc-1") (zona "servidores") (acceso "Tomas"))')
-    env.assert_string('(sensor-acceso (nombre "sensor-acc-2") (zona "servidores") (acceso "David"))')
     env.assert_string('(sensor-salida (nombre "sensor-sal-1") (zona "servidores"))')
+    env.assert_string('(sensor-acceso (nombre "sensor-acc-2") (zona "servidores") (acceso "David"))')
+    
     env.run()
     print("\n")
     sleep(5)
 
-# Función para mostrar ña ejecucion de las reglas de caso de bomba
+# Función para mostrar la ejecucion de las reglas de caso de bomba
 def demostracion_bomba():
     cargar_hechos()
     print("Demostración de bomba: ")

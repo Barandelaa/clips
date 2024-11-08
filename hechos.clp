@@ -10,7 +10,7 @@
     (zona (nombre "entrada") (acceso 1) (ocupacion-max 20) (ocupacion-actual 0) (contenido "no-sensible"))
     (zona (nombre "limpieza") (acceso 2) (ocupacion-max 5) (ocupacion-actual 0) (contenido "sensible"))
     (zona (nombre "oficinas") (acceso 1) (ocupacion-max 15) (ocupacion-actual 0) (contenido "sensible"))
-    (zona (nombre "servidores") (acceso 2) (ocupacion-max 3) (ocupacion-actual 3) (contenido "sensible"))
+    (zona (nombre "servidores") (acceso 2) (ocupacion-max 3) (ocupacion-actual 2) (contenido "sensible"))
     (zona (nombre "comunicaciones") (acceso 2) (ocupacion-max 4) (ocupacion-actual 0) (contenido "sensible"))
     (zona (nombre "area-control") (acceso 3) (ocupacion-max 2) (ocupacion-actual 0) (contenido "sensible"))
 )

@@ -121,6 +121,7 @@
    ?sensor <- (sensor-metales (nombre ?nombre) (zona ?zona))
    =>
    (printout t "Detectado explosivo en " ?zona ". Amenaza a la seguridad. Evacuacion inminente del edificio." crlf)
+   (printout t "Unidad antiterrorista en camino" crlf)
    (do-for-all-facts ((?z zona)) TRUE
       (modify ?z (ocupacion-actual 0)))
    (retract ?sensor))
